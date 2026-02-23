@@ -1,6 +1,6 @@
 # 🍽️ Food Recipe Generator
 
-![App Workflow](App_Workflow.jpg)
+![App Workflow](Food_recipe_gen_workflow.jpeg)
 
 A modern, dark-themed architecture diagram of a Food Recipe Generator application built with Streamlit (frontend) and FastAPI (backend). It shows two main paths: food classification using a ViT model (trained on Food-101) and ingredient/object detection using YOLOv11, both feeding detected items into Llama 3.3 70B to generate relevant recipes, with clean neon accents and a sleek AI-app layout.
 

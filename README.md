@@ -39,7 +39,7 @@ A modern, dark-themed architecture diagram of a Food Recipe Generator applicatio
 
 
 ## 📁 Project structure
-
+```bash
 food-suggestor-recipe-generator
 ├── 🧠 model
 │   ├── food_detection.py          # Food classifier (nateraw/food)
@@ -51,6 +51,7 @@ food-suggestor-recipe-generator
 ├── 🍳 gen_recipe.py               # LLM recipe & suggestion logic
 ├── ⚡ main.py                     # FastAPI backend
 └── 🖥️ streamlit_app.py           # Streamlit frontend
+```
 
 ## ⚙️ Setup
 

@@ -1,81 +1,82 @@
-# 🕌 Quran Guider using RAG
+# 🍽️ Food Recipe Generator
 
-![RAG Workflow](RAG_workflow.png)
+![App Workflow](App_Workflow.jpg)
 
-A beginner‑friendly Retrieval‑Augmented Generation (RAG) project that answers questions about the Qur’an using a PDF of **“The Qur’an with Annotated Interpretation in Modern English – Ali Ünal”**, dense embeddings, FAISS as a vector database, and the a large language model.
+A modern, dark-themed architecture diagram of a Food Recipe Generator application built with Streamlit (frontend) and FastAPI (backend). It shows two main paths: food classification using a ViT model (trained on Food-101) and ingredient/object detection using YOLOv11, both feeding detected items into Llama 3.3 70B to generate relevant recipes, with clean neon accents and a sleek AI-app layout.
 
-Everything is implemented in two Colab‑ready notebook:
-
-> `QuranGuiderUsingRAG.ipynb`
-> `LangChainVersion.ipynb`
 
 ---
 
 ## 🌟 Features
 
-For Langchain version:
+- *Food Recognition + Recipe Generation*  
+  Upload any food photo → model detects what it is → LLM generates a complete recipe
 
-- Loading the pdf using langchain using **PyMuPDFLoader**.
-- Splitted data into chunks using **RecursiveCharacterTextSplitter** with chunk size of **10,000**.
-- Used embeddings model **sentence-transformers/all-MiniLM-L6-v2** to embed all the documents.
-- Used **FAISS** vector database to sore the vectors.
-- Loading the LLM **llama-3.3-70b-versatile** using **GROQ API**.
-- Building prompts and chains using langchain and asking the questions.
+- *Ingredient-based Dish Suggestions*  
+  Upload a photo of fruits & vegetables → model identifies them → LLM suggests creative dishes you can make
 
-For Beginner friendly version 
+- Modern, clean *Streamlit* user interface  
+- Fast & production-ready *FastAPI* backend  
+- Two main API endpoints:
+  - POST /api/v1/generate-recipe  
+  - POST /api/v1/suggest-dishes
 
-- Load and parse the Qur’an PDF page by page.
-- Clean the text (remove inline numeric citations like `).22`) and split it into sentences.
-- Create fixed‑size chunks of **10 sentences** (last chunk may be shorter).
-- Generate dense embeddings for every chunk using **sentence-transformers/all-mpnet-base-v2**.
-- Store embeddings in a **FAISS** index for fast similarity search.
-- Load **Gemma‑2‑2B‑IT** in 4‑bit with `bitsandbytes` and Hugging Face Transformers.
-- Answer English questions about the Qur’an by:
-  1. Encoding the question.
-  2. Retrieving the top‑8 most relevant chunks from FAISS.
-  3. Building a prompt that includes the retrieved context.
-  4. Letting Gemma generate a grounded answer.
+## 🛠️ Tech Stack
 
----
+| Layer              | Technology / Library                           |
+|--------------------|------------------------------------------------|
+| Backend            | FastAPI, Uvicorn                               |
+| Frontend           | Streamlit                                      |
+| Image Processing   | Pillow                                         |
+| Computer Vision    | Ultralytics (YOLO), Transformers               |
+| Models             | nateraw/food (food classification) <br> yolo_fruits_and_vegetables_v3.pt (YOLO) |
+| LLM                | Llama-3.3-70b-versatile (via Groq)             |
+| LLM Integration    | LangChain + Groq                               |
+| Environment        | python-dotenv                                  |
+| File Upload        | python-multipart                               |
+| HTTP Client        | requests                                       |
+| Deep Learning      | PyTorch, transformers                          |
+
 
 ## 📁 Project structure
 
-├── `QuranGuiderUsingRAG.ipynb` # Main notebook (all code) <br>
-├── `RAG_workflow.jpg` # RAG workflow diagram (used in README) <br>
-└── `the-quran-with-annotated-interpretation-in-modern-english-ali-unal.pdf` # original book <br>
-└── `LangChainVersion.ipynb` # langcahin version of all of the project with different embedding model and LLM. <br>
+food-suggestor-recipe-generator
+├── 🧠 model
+│   ├── food_detection.py          # Food classifier (nateraw/food)
+│   ├── ingredients_detection.py   # YOLO fruits & veg
+│   └── yolov_fruits_and_vegetables_v3.pt
+├── 🔑 .env
+├── 📦 requirements.txt
+├── 🚀 run_all.py
+├── 🍳 gen_recipe.py               # LLM recipe & suggestion logic
+├── ⚡ main.py                     # FastAPI backend
+└── 🖥️ streamlit_app.py           # Streamlit frontend
 
 ## ⚙️ Setup
 
 ### 1. Clone the repository
-
 ```bash
-git clone https://github.com/SyedNajiullah/QuranGuiderUsingRAG.git
-cd QuranGuiderUsingRAG
+git clone https://github.com/Ali-Azhar-786/food-recipe-generator.git
+cd food-recipe-generator
 ```
-### 2. Add the Qur’an PDF
+### 2. Create virtual environment & install dependencies 
+```bash
+python -m venv venv
+source venv/bin/activate    # Linux / macOS
+# or on Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
 
-Add the pdf to root as the-quran-with-annotated-interpretation-in-modern-english-ali-unal.pdf
+### 3. Create .env file
+GROQ_API_KEY=your_groq_api_key_here
+Optional: PORT=8000
 
-### 3. Install dependencies
+### 4. Run the backend (FastAPI)
+uvicorn main:app --reload --port 8000
+or use the script if you have one: python run_backend.py
 
-Run the cell one by one it will automatically install all dependencies. You might need to restart the session once when the google gemma is loaded for the bitsandbytes error if encountered.
-
-
-### 4. Hugging Face token (for Gemma)
-
-Gemma is a **gated** model. To use `google/gemma-2-2b-it`:
-
-1. Create a Hugging Face account and log in.  
-2. Open the model page and accept the license:  
-   - https://huggingface.co/google/gemma-2-2b-it  
-3. Go to your tokens page:  
-   - https://huggingface.co/settings/tokens  
-4. Create a **fine‑grained token** with:
-   - **Read** access to models.
-   - Permission to access **public gated models**.
-5. In your notebook, set:
-   - HF_TOKEN = "hf_YourHuggingFaceToken"
-
-If you are running the ***Lang chain version*** then make GROQ api using the following link: https://console.groq.com/keys <br>
-Then paste it where the API is being called. 
+### 5. Run the frontend (Streamlit)
+In a new terminal:
+Bash
+streamlit run app.py
+usually opens at http://localhost:8501
